@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>History • PatternMe</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+
+<body data-active="history" onload="initHistory()">
+    <header class="topbar">
+  <div class="nav-container">
+
+    <!-- Logo -->
+    <a href="dashboard.html" class="brand">
+      <span class="brand-icon">P</span>
+      <span>PatternMe</span>
+    </a>
+
+    <!-- Navigation links -->
+    <nav class="nav-links">
+      <a href="index.html" data-page="dashboard">Overview</a>
+      <a href="checkin.html" data-page="checkin">Daily Check-in</a>
+      <a href="history.html" data-page="history">History</a>
+      <a href="insights.html" data-page="insights">Insights</a>
+    </nav>
+
+    <!-- User and logout -->
+    <div class="nav-user">
+      <span class="user-avatar" id="userAvatar">U</span>
+      <span class="user-name" id="userName">User</span>
+      <button class="logout-btn" onclick="logout()">Log out</button>
+    </div>
+
+  </div>
+</header>
+    <main class="wrap">
+        <div class="page-head">
+            <div><span class="eyebrow">Your records</span>
+                <h1>Check-in history</h1>
+                <p>Review, edit, or export the days you've tracked.</p>
+            </div>
+            <div style="display:flex;gap:9px;flex-wrap:wrap"><button class="secondary" onclick="exportCSV()">↓ Export
+                    CSV</button><a class="btn" href="checkin.html">＋ Add entry</a></div>
+        </div>
+        <section class="card">
+            <div class="section-title">
+                <h2>All entries</h2><span class="pill" id="historyCount">0 entries</span>
+            </div>
+            <div class="table-wrap" id="historyTable"></div>
+        </section>
+        <div class="footer">Editing a date on the Daily check-in page updates that date's existing entry.</div>
+    </main>
+
+    <footer class="site-footer">
+  <div class="footer-container">
+
+    <div class="footer-brand">
+      <a href="dashboard.html" class="footer-logo">
+        <span class="brand-icon">P</span>
+        <span>PatternMe</span>
+      </a>
+
+      <p>
+        Understand your habits.
+        Discover your patterns.
+        Build a better routine.
+      </p>
+    </div>
+
+    <div class="footer-links">
+      <h3>Quick Links</h3>
+      <a href="dashboard.html">Overview</a>
+      <a href="checkin.html">Daily Check-in</a>
+      <a href="history.html">History</a>
+      <a href="insights.html">Insights</a>
+    </div>
+
+    <div class="footer-info">
+      <h3>About PatternMe</h3>
+      <p>
+        A personal habit-tracking project built with
+        HTML, CSS and JavaScript.
+      </p>
+      <!-- <span class="storage-label">
+        Your data is stored in this browser.
+      </span> -->
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <p>
+      &copy; <span id="currentYear"></span> PatternMe.
+      Made for learning and personal growth.
+    </p>
+  </div>
+</footer>
+
+    <script>
+        function initHistory() { if (!requireAuth()) return; renderNav('history'); renderHistory() }
+        function renderHistory() { const all = allEntries(); document.getElementById('historyCount').textContent = `${all.length} entr${all.length === 1 ? 'y' : 'ies'}`; document.getElementById('historyTable').innerHTML = all.length ? `<table class="table"><thead><tr><th>Date</th><th>Sleep</th><th>Study</th><th>Screen</th><th>Exercise</th><th>Focus</th><th>Mood</th><th>Actions</th></tr></thead><tbody>${all.map(([d, v]) => `<tr><td>${formatDate(d)}</td><td>${v.sleep}h</td><td>${v.study}h</td><td>${v.screen}h</td><td>${v.exercise}m</td><td>${v.focus}/5</td><td>${esc(v.mood)}</td><td><a href="checkin.html?date=${d}" style="color:var(--brand);font-weight:800">Edit</a> &nbsp; <button class="danger" style="padding:5px 8px;font-size:11px" onclick="removeEntry('${d}')">Delete</button></td></tr>`).join('')}</tbody></table>` : `<div class="empty"><strong>Your history starts here</strong>Once you save a daily check-in, it will appear on this page.<br><a href="checkin.html" style="color:var(--brand);font-weight:800">Add your first entry</a></div>` }
+        function removeEntry(date) { if (!confirm(`Delete the check-in for ${formatDate(date)}?`)) return; deleteEntry(date); renderHistory() }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Create account • PatternMe</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- <script src="app.js" defer></script> -->
+</head>
+
+<body>
+    <main class="auth-shell">
+        <section class="auth-visual"><a class="brand" href="login.html" style="color:white"><span class="brand-mark"
+                    style="background:#ffffff25">P</span>PatternMe</a>
+            <div><span class="eyebrow" style="color:#d9d5ff">Start with today</span>
+                <h1>Get to know<br>your own rhythm.</h1>
+                <p>A simple personal dashboard for habits, focus, sleep, and mood — without complicated setup.</p>
+            </div>
+            <div class="auth-bubble"><strong>Your progress, your pace</strong>
+                <p style="margin:6px 0 0;font-size:14px">Choose a date, record your day, and revisit your patterns
+                    whenever you need.</p>
+            </div>
+        </section>
+        
+        <!--Start authentication section-->
+<section class="auth-container">
+
+    <div class="auth-box">
+
+        <h2>Create Account</h2>
+
+        <form id="signUp">
+           <div>
+            <input type="text" placeholder="Full name"  id="name">
+            <small></small>
+           </div>
+            
+           <div>
+            <input type="email" placeholder="Email"  id="email">
+            <small></small>
+           </div>
+            
+           <div>
+            <input type="password" placeholder="Password"  id="password">
+            <small></small>
+           </div>
+            
+           <div>
+            <input type="password" placeholder="Confirm password"  id="confirm-password">
+            <small></small>
+           </div>
+            
+
+            <button type="submit">Signup</button>
+        </form>
+
+        <p>Already have an account? <a href="login.html">Login</a></p>
+
+    </div>
+
+</section>
+
+<!--End authentication section-->
+
+    </main>
+    <script src="js/register.js">
+        // document.getElementById('registerForm').addEventListener('submit', e => { e.preventDefault(); const name = document.getElementById('name').value.trim(), email = document.getElementById('email').value.trim().toLowerCase(), password = document.getElementById('password').value; const accounts = getAccounts(); if (accounts[email]) { showMessage('An account with this email already exists. Please log in.', 'error'); return } accounts[email] = { name, email, password, entries: {}, createdAt: new Date().toISOString() }; saveAccounts(accounts); setSession(email); location.href = 'dashboard.html' });
+    </script>
+</body>
+
+</html>

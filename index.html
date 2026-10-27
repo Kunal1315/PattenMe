@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Overview • PatternMe</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+
+<body data-active="dashboard" onload="initDashboard()">
+    
+        <header class="topbar">
+  <div class="nav-container">
+
+    <!-- Logo -->
+    <a href="index.html" class="brand">
+      <span class="brand-icon">P</span>
+      <span>PatternMe</span>
+    </a>
+
+    <!-- Navigation links -->
+    <nav class="nav-links">
+      <a href="index.html" data-page="dashboard">Overview</a>
+      <a href="checkin.html" data-page="checkin">Daily Check-in</a>
+      <a href="history.html" data-page="history">History</a>
+      <a href="insights.html" data-page="insights">Insights</a>
+    </nav>
+
+    <!-- User and logout -->
+    <div class="nav-user">
+      <span class="user-avatar" id="userAvatar">U</span>
+      <span class="user-name" id="userName">User</span>
+      <button class="logout-btn" onclick="logout()">Log out</button>
+    </div>
+
+  </div>
+</header>
+    
+
+    <main class="wrap">
+        <section class="welcome-strip">
+            <div>
+                <div class="eyebrow" style="color:#e2deff">Your personal dashboard</div>
+                <h2 id="welcome">Welcome back</h2>
+                <p>A little data each day can reveal useful patterns over time.</p>
+            </div><a class="btn" href="checkin.html">＋ Add daily check-in</a>
+        </section>
+        <div class="page-head">
+            <div><span class="eyebrow">Overview</span>
+                <h1>Your routine at a glance</h1>
+                <p>Based on your latest 7 days of logged entries.</p>
+            </div><span class="pill" id="daysPill">0 days logged</span>
+        </div>
+        <section class="grid cards">
+            <article class="card">
+                <div class="metric-label">Average sleep</div>
+                <div id="sleepMetric">
+                    <div class="metric">—</div>
+                    <div class="metric-note">Hours per logged day</div>
+                </div>
+            </article>
+            <article class="card">
+                <div class="metric-label">Study time</div>
+                <div id="studyMetric">
+                    <div class="metric">—</div>
+                    <div class="metric-note">Hours per logged day</div>
+                </div>
+            </article>
+            <article class="card">
+                <div class="metric-label">Screen time</div>
+                <div id="screenMetric">
+                    <div class="metric">—</div>
+                    <div class="metric-note">Hours per logged day</div>
+                </div>
+            </article>
+            <article class="card">
+                <div class="metric-label">Average focus</div>
+                <div id="focusMetric">
+                    <div class="metric">—</div>
+                    <div class="metric-note">Out of 5</div>
+                </div>
+            </article>
+        </section>
+        <section class="grid two" style="margin-top:18px">
+            <article class="card">
+                <div class="section-title">
+                    <h2>Recent check-ins</h2><a href="history.html">View history →</a>
+                </div>
+                <div id="recent"></div>
+            </article>
+            <article class="card">
+                <div class="section-title">
+                    <h2>Your first insight</h2><a href="insights.html">All insights →</a>
+                </div>
+                <div id="insight"></div><a class="btn secondary" href="insights.html" style="margin-top:7px">Explore
+                    insights</a>
+            </article>
+        </section>
+        <div class="footer">PatternMe · Your data is saved locally in this browser.</div>
+    </main>
+
+    <!--footer-->
+    <footer class="site-footer">
+  <div class="footer-container">
+
+    <div class="footer-brand">
+      <a href="dashboard.html" class="footer-logo">
+        <span class="brand-icon">P</span>
+        <span>PatternMe</span>
+      </a>
+
+      <p>
+        Understand your habits.
+        Discover your patterns.
+        Build a better routine.
+      </p>
+    </div>
+
+    <div class="footer-links">
+      <h3>Quick Links</h3>
+      <a href="dashboard.html">Overview</a>
+      <a href="checkin.html">Daily Check-in</a>
+      <a href="history.html">History</a>
+      <a href="insights.html">Insights</a>
+    </div>
+
+    <div class="footer-info">
+      <h3>About PatternMe</h3>
+      <p>
+        A personal habit-tracking project built with
+        HTML, CSS and JavaScript.
+      </p>
+      <!-- <span class="storage-label">
+        Your data is stored in this browser.
+      </span> -->
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <p>
+      &copy; <span id="currentYear"></span> PatternMe.
+      Made for learning and personal growth.
+    </p>
+  </div>
+</footer>
+
+
+    <script>
+        function initDashboard() { if (!requireAuth()) return; renderNav('dashboard'); const a = currentAccount(), all = allEntries(), week = all.filter(([d]) => recentDays(7).includes(d)); document.getElementById('welcome').textContent = `Welcome back, ${a.name.split(' ')[0]}`; document.getElementById('daysPill').textContent = `${all.length} day${all.length === 1 ? '' : 's'} logged`; metric('sleepMetric', week.length ? average(week, 'sleep').toFixed(1) + 'h' : '—', 'Average sleep per logged day'); metric('studyMetric', week.length ? average(week, 'study').toFixed(1) + 'h' : '—', 'Average study time per logged day'); metric('screenMetric', week.length ? average(week, 'screen').toFixed(1) + 'h' : '—', 'Average screen time per logged day'); metric('focusMetric', week.length ? average(week, 'focus').toFixed(1) + '/5' : '—', 'Average focus rating'); const recent = all.slice(0, 4); document.getElementById('recent').innerHTML = recent.length ? `<div class="table-wrap"><table class="table" style="min-width:0"><thead><tr><th>Date</th><th>Study</th><th>Mood</th></tr></thead><tbody>${recent.map(([d, v]) => `<tr><td>${formatDate(d)}</td><td>${v.study}h</td><td>${esc(v.mood || '—')}</td></tr>`).join('')}</tbody></table></div>` : `<div class="empty"><strong>No check-ins yet</strong>Your daily entries will appear here.<br><a href="checkin.html" style="color:var(--brand);font-weight:800">Add your first check-in</a></div>`; document.getElementById('insight').innerHTML = `<div class="insight"><strong>Pattern to notice</strong>${esc(insightList()[0])}</div>` }
+    </script>
+</body>
+
+</html>

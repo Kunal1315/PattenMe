@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Log in • PatternMe</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- <script src="app.js" defer></script> -->
+</head>
+
+<body>
+    <main class="auth-shell">
+        <section class="auth-visual"><a class="brand" href="login.html" style="color:white"><span class="brand-mark"
+                    style="background:#ffffff25">P</span>PatternMe</a>
+            <div><span class="eyebrow" style="color:#d9d5ff">Your personal pattern detective</span>
+                <h1>Small habits.<br>Clearer patterns.</h1>
+                <p>Understand how your daily routine connects with your energy, focus, and mood.</p>
+            </div>
+            <div class="auth-bubble"><strong>One day at a time</strong>
+                <p style="margin:6px 0 0;font-size:14px">Track your routine, look back at your history, and learn what
+                    works for you.</p>
+            </div>
+        </section>
+        
+        <!--Start authentication section-->
+    <section class="auth-container">
+        <div class="auth-box">
+            <h2>Login to <span>PatternMe</span></h2>
+
+            <form id="Login">
+                <div>
+                    <input type="email" placeholder="Enter Email" id="email" >
+                    <small></small>
+                </div>
+
+                <div>
+                    <input type="password" placeholder="Enter password" id="password">
+                    <small></small>
+                </div>
+
+                <button type="submit">Login</button>
+            </form>
+
+            <p><a href="register.html">Forgot password</a></p>
+            <p>Don't have an account <a href="register.html">Signup</a></p>
+        </div>
+    </section>
+
+    <!--End authentication section-->
+
+    </main>
+    <script src="js/login.js">
+        // document.getElementById('loginForm').addEventListener('submit', e => { e.preventDefault(); const email = document.getElementById('email').value.trim().toLowerCase(), password = document.getElementById('password').value; const accounts = getAccounts(), account = accounts[email]; if (!account || account.password !== password) { showMessage('Email or password is incorrect. Please try again.', 'error'); return } setSession(email); location.href = 'dashboard.html' });
+        // if (getSession() && currentAccount()) location.href = 'dashboard.html';
+    </script>
+</body>
+
+</html>

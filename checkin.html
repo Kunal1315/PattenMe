@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Daily check-in • PatternMe</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+
+<body data-active="checkin" onload="initCheckin()">
+    <header class="topbar">
+  <div class="nav-container">
+
+    <!-- Logo -->
+    <a href="dashboard.html" class="brand">
+      <span class="brand-icon">P</span>
+      <span>PatternMe</span>
+    </a>
+
+    <!-- Navigation links -->
+    <nav class="nav-links">
+      <a href="index.html" data-page="dashboard">Overview</a>
+      <a href="checkin.html" data-page="checkin">Daily Check-in</a>
+      <a href="history.html" data-page="history">History</a>
+      <a href="insights.html" data-page="insights">Insights</a>
+    </nav>
+
+    <!-- User and logout -->
+    <div class="nav-user">
+      <span class="user-avatar" id="userAvatar">U</span>
+      <span class="user-name" id="userName">User</span>
+      <button class="logout-btn" onclick="logout()">Log out</button>
+    </div>
+
+  </div>
+</header>
+    <main class="wrap">
+        <div class="page-head">
+            <div><span class="eyebrow">Daily check-in</span>
+                <h1>How was your day?</h1>
+                <p>Pick any date, fill in what you remember, and save it.</p>
+            </div>
+        </div>
+        <div id="message" hidden></div>
+        <form id="entryForm" class="card">
+            <div class="checkin-date" style="margin-bottom:22px">
+                <div class="field"><label for="entryDate">Entry date</label><input id="entryDate" type="date" required>
+                </div>
+                <div class="muted" id="dateHint" style="padding-top:20px">Choose a date to add or edit an entry.</div>
+            </div>
+            <div class="form-grid">
+                <div class="field"><label for="sleep">Sleep (hours)</label><input id="sleep" type="number" min="0"
+                        max="24" step=".25" placeholder="e.g. 7.5" required></div>
+                <div class="field"><label for="study">Study / work (hours)</label><input id="study" type="number"
+                        min="0" max="24" step=".25" placeholder="e.g. 3" required></div>
+                <div class="field"><label for="screen">Screen time (hours)</label><input id="screen" type="number"
+                        min="0" max="24" step=".25" placeholder="e.g. 4.5" required></div>
+                <div class="field"><label for="exercise">Exercise (minutes)</label><input id="exercise" type="number"
+                        min="0" max="1440" step="1" placeholder="e.g. 20" required></div>
+                <div class="field"><label for="focus">Focus rating (1–5)</label><select id="focus" required>
+                        <option value="">Choose a rating</option>
+                        <option value="1">1 — Very low</option>
+                        <option value="2">2 — Low</option>
+                        <option value="3">3 — Average</option>
+                        <option value="4">4 — Good</option>
+                        <option value="5">5 — Excellent</option>
+                    </select></div>
+                <div class="field"><label for="mood">Mood</label><select id="mood" required>
+                        <option value="">Choose your mood</option>
+                        <option>Great</option>
+                        <option>Good</option>
+                        <option>Okay</option>
+                        <option>Low</option>
+                        <option>Stressed</option>
+                        <option>Tired</option>
+                    </select></div>
+                <div class="field full"><label for="notes">Notes (optional)</label><textarea id="notes" maxlength="600"
+                        placeholder="What went well? What would you like to change tomorrow?"></textarea></div>
+            </div>
+            <div class="form-actions"><button type="submit" class="btn">Save check-in</button><button type="button"
+                    class="btn secondary" id="clearBtn">Clear form</button><a class="btn secondary"
+                    href="history.html">View history</a></div>
+        </form>
+        <div class="footer">You can edit an old entry by selecting its date above.</div>
+    </main>
+
+    <footer class="site-footer">
+  <div class="footer-container">
+
+    <div class="footer-brand">
+      <a href="dashboard.html" class="footer-logo">
+        <span class="brand-icon">P</span>
+        <span>PatternMe</span>
+      </a>
+
+      <p>
+        Understand your habits.
+        Discover your patterns.
+        Build a better routine.
+      </p>
+    </div>
+
+    <div class="footer-links">
+      <h3>Quick Links</h3>
+      <a href="dashboard.html">Overview</a>
+      <a href="checkin.html">Daily Check-in</a>
+      <a href="history.html">History</a>
+      <a href="insights.html">Insights</a>
+    </div>
+
+    <div class="footer-info">
+      <h3>About PatternMe</h3>
+      <p>
+        A personal habit-tracking project built with
+        HTML, CSS and JavaScript.
+      </p>
+      <!-- <span class="storage-label">
+        Your data is stored in this browser.
+      </span> -->
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <p>
+      &copy; <span id="currentYear"></span> PatternMe.
+      Made for learning and personal growth.
+    </p>
+  </div>
+</footer>
+
+    <script>
+        function initCheckin() { if (!requireAuth()) return; renderNav('checkin'); const date = document.getElementById('entryDate'); date.value = new URLSearchParams(location.search).get('date') || todayISO(); loadDateEntry(); date.addEventListener('change', loadDateEntry); document.getElementById('clearBtn').addEventListener('click', () => { document.getElementById('entryForm').reset(); date.value = todayISO(); loadDateEntry() }); document.getElementById('entryForm').addEventListener('submit', e => { e.preventDefault(); const d = date.value; if (!d) { showMessage('Please select a date.', 'error'); return } const value = id => document.getElementById(id).value; const data = { sleep: Number(value('sleep')), study: Number(value('study')), screen: Number(value('screen')), exercise: Number(value('exercise')), focus: Number(value('focus')), mood: value('mood'), notes: value('notes').trim(), updatedAt: new Date().toISOString() }; saveEntry(d, data); showMessage(`Check-in for ${formatDate(d)} saved successfully.`); document.getElementById('dateHint').textContent = 'Saved. You can still edit this date.' }) }
+        function loadDateEntry() { const d = document.getElementById('entryDate').value, v = entries()[d]; document.getElementById('entryForm').querySelectorAll('input[type=number],select,textarea').forEach(el => { if (el.id !== 'entryDate') el.value = '' }); if (v) { for (const key of ['sleep', 'study', 'screen', 'exercise', 'focus', 'mood', 'notes']) document.getElementById(key).value = v[key] ?? ''; document.getElementById('dateHint').textContent = 'An entry exists for this date. Changes will update it.' } else document.getElementById('dateHint').textContent = 'No entry for this date yet. Fill in the form to create one.'; const msg = document.getElementById('message'); if (msg) msg.hidden = true }
+    </script>
+</body>
+
+</html>
